@@ -1,26 +1,57 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import {v1} from "uuid";
+import TodoList from "./components/TodoList";
+
+export type TasksType = {
+    id: string
+    title: string
+    isDone: boolean
+}
+export type FilterType = 'all' | 'active' | 'completed'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [tasks, setTasks] = useState<TasksType[]>([
+        {id: v1(), title: 'React', isDone: false},
+        {id: v1(), title: 'TS', isDone: true},
+        {id: v1(), title: 'Redux', isDone: false},
+        {id: v1(), title: 'Apollo', isDone: false},
+        {id: v1(), title: 'Material', isDone: true},
+        {id: v1(), title: 'Redux', isDone: false},
+        {id: v1(), title: 'Query', isDone: true}
+    ])
+
+    const [filter, setFilter] = useState<FilterType>('all')
+    const filterChange = (tasks: TasksType[], filter: FilterType) => {
+        if (filter === 'active') {
+            return tasks.filter(el => !el.isDone)
+        }
+        if (filter === 'completed') {
+            return tasks.filter(el => el.isDone)
+        }
+        return tasks
+    }
+
+    const filteredTasks = filterChange(tasks, filter);
+    const filterCh = (filter: FilterType) => {
+        setFilter(filter)
+    }
+
+    const removeTask = (id: string) => {
+        let updateTasks = tasks.filter(el => el.id !== id)
+        setTasks(updateTasks)
+    }
+    const addTask = (title: string) => {
+        let newTask = {id: v1(), title: title, isDone: false};
+        let updateTasks = [newTask, ...tasks];
+        setTasks(updateTasks)
+    }
+
+    return (
+        <div className="App">
+            <TodoList title={'MyTestTodo'} tasks={filteredTasks} changeFilter={filterCh} removeTask={removeTask} addTask={addTask}/>
+        </div>
+    );
 }
 
 export default App;
