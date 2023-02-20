@@ -37,19 +37,33 @@ function App() {
         setFilter(filter)
     }
 
+    const changeStatus = (id: string, isDone: boolean) => {
+        let task = tasks.find(el => el.id === id);
+        if (task) {
+            task.isDone = isDone
+        }
+        setTasks([...tasks])
+    }
+
     const removeTask = (id: string) => {
         let updateTasks = tasks.filter(el => el.id !== id)
         setTasks(updateTasks)
     }
     const addTask = (title: string) => {
         let newTask = {id: v1(), title: title, isDone: false};
-        let updateTasks = [newTask, ...tasks];
-        setTasks(updateTasks)
+        setTasks([newTask, ...tasks])
     }
 
     return (
         <div className="App">
-            <TodoList title={'MyTestTodo'} tasks={filteredTasks} changeFilter={filterCh} removeTask={removeTask} addTask={addTask}/>
+            <TodoList title={'MyTestTodo'}
+                      tasks={filteredTasks}
+                      changeFilter={filterCh}
+                      removeTask={removeTask}
+                      addTask={addTask}
+                      changeStatus={changeStatus}
+                      filter={filter}
+            />
         </div>
     );
 }
